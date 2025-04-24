@@ -19,6 +19,9 @@ RUN python manage.py collectstatic --noinput
 # Применяем миграции
 RUN python manage.py migrate
 
+# Инициализация предустановленных данных
+RUN python manage.py initial_data
+
 # Указываем порт, который будет прослушивать контейнер
 EXPOSE 8000
 

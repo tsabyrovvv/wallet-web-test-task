@@ -35,8 +35,33 @@
 - Python 3.8+
 - Django 4.0+
 - TailwindCSS
+- Docker
 
-### Шаги установки
+### Запуск через Docker
+
+1. Клонируйте репозиторий
+```bash
+git clone https://github.com/tsabyrovvv/wallet-web-test-task.git
+cd cashflow_manager
+```
+
+2. Создайте файл .env в корневой директории проекта:
+```
+SECRET_KEY=YOUR_SECRET_KEY
+DEBUG=True
+ALLOWED_HOSTS=YOUR_HOSTS
+CSRF_TRUSTED_ORIGINS=YOUR_DOMAINS
+```
+
+3. Соберите и запустите Docker-контейнер
+```bash
+docker build -t cashflow-manager .
+docker run -p 8000:8000 cashflow-manager
+```
+
+4. Откройте в браузере URL: http://127.0.0.1:8000/
+
+### Альтернативный способ (без Docker)
 
 1. Клонировать репозиторий
 ```bash
@@ -56,28 +81,41 @@ venv\Scripts\activate  # для Windows
 pip install -r requirements.txt
 ```
 
-4. Выполнить миграции
+4. Создать файл .env в корневой директории проекта и добавить настройки:
+```
+SECRET_KEY=YOUR_SECRET_KEY
+DEBUG=True
+ALLOWED_HOSTS=YOUR_HOSTS
+CSRF_TRUSTED_ORIGINS=YOUR_DOMAINS
+```
+
+5. Выполнить миграции
 ```bash
 python manage.py makemigrations
 python manage.py migrate
 ```
 
-5. Инициализировать базу данных начальными данными
+6. Инициализировать базу данных начальными данными
 ```bash
 python manage.py initial_data
 ```
 
-6. Создать суперпользователя (для доступа к админ-панели)
+7. Создать суперпользователя (для доступа к админ-панели)
 ```bash
 python manage.py createsuperuser
 ```
 
-7. Запустить сервер
+8. Запустить сервер для разработки
 ```bash
 python manage.py runserver
 ```
 
-8. Открыть в браузере URL: http://127.0.0.1:8000/
+Или запустить через Gunicorn (рекомендуется для продакшена):
+```bash
+gunicorn --bind 0.0.0.0:8000 core.wsgi:application
+```
+
+9. Открыть в браузере URL: http://127.0.0.1:8000/
 
 ## Структура проекта
 
@@ -108,6 +146,7 @@ cashflow_manager/
 │
 ├── manage.py                   # Скрипт управления Django
 └── requirements.txt            # Зависимости проекта
+└── Dockerfile                  # Настройки контейнера проекта
 ```
 
 ## Техническая документация
