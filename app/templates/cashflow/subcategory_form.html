@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}ДДС - {% if form.instance.pk %}Редактирование{% else %}Создание{% endif %} подкатегории{% endblock %}
+
+{% block content %}
+<div class="bg-white rounded-lg shadow-md p-6">
+    <h1 class="text-2xl font-bold mb-6">
+        {% if form.instance.pk %}
+            Редактирование подкатегории
+        {% else %}
+            Создание новой подкатегории
+        {% endif %}
+    </h1>
+    
+    <form method="post" class="space-y-6">
+        {% csrf_token %}
+        
+        <!-- Обработка ошибок формы -->
+        {% if form.non_field_errors %}
+        <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm text-red-700">
+                        {% for error in form.non_field_errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <div>
+            <label for="{{ form.name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                Наименование подкатегории <span class="text-red-500">*</span>
+            </label>
+            {{ form.name }}
+            {% if form.name.errors %}
+            <p class="mt-1 text-sm text-red-600">
+                {% for error in form.name.errors %}
+                    {{ error }}
+                {% endfor %}
+            </p>
+            {% endif %}
+        </div>
+        
+        <div>
+            <label for="{{ form.category.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                Категория <span class="text-red-500">*</span>
+            </label>
+            {{ form.category }}
+            {% if form.category.errors %}
+            <p class="mt-1 text-sm text-red-600">
+                {% for error in form.category.errors %}
+                    {{ error }}
+                {% endfor %}
+            </p>
+            {% endif %}
+        </div>
+        
+        <div class="flex justify-between pt-4">
+            <a href="{% url 'dictionary' %}" class="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded transition">
+                Отмена
+            </a>
+            <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded transition">
+                {% if form.instance.pk %}Сохранить изменения{% else %}Создать подкатегорию{% endif %}
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

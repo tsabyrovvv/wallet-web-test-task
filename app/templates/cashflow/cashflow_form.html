@@ -1,0 +1,291 @@
+{% extends 'base.html' %}
+
+{% block title %}ДДС - {% if form.instance.pk %}Редактирование{% else %}Создание{% endif %} записи{% endblock %}
+
+{% block content %}
+<div class="bg-white rounded-lg shadow-md p-6">
+    <h1 class="text-2xl font-bold mb-6">
+        {% if form.instance.pk %}
+            Редактирование записи о движении денежных средств
+        {% else %}
+            Создание новой записи о движении денежных средств
+        {% endif %}
+    </h1>
+    
+    <form method="post" class="space-y-6">
+        {% csrf_token %}
+        
+        <!-- Обработка ошибок формы -->
+        {% if form.non_field_errors %}
+        <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm text-red-700">
+                        {% for error in form.non_field_errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <!-- Дата создания записи -->
+            <div>
+                <label for="{{ form.date_created.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                    Дата создания записи <span class="text-red-500">*</span>
+                </label>
+                {{ form.date_created }}
+                {% if form.date_created.errors %}
+                <p class="mt-1 text-sm text-red-600">
+                    {% for error in form.date_created.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </p>
+                {% endif %}
+            </div>
+            
+            <!-- Статус -->
+            <div>
+                <label for="{{ form.status.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                    Статус <span class="text-red-500">*</span>
+                </label>
+                {{ form.status }}
+                {% if form.status.errors %}
+                <p class="mt-1 text-sm text-red-600">
+                    {% for error in form.status.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </p>
+                {% endif %}
+            </div>
+            
+            <!-- Тип -->
+            <div>
+                <label for="{{ form.type.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                    Тип <span class="text-red-500">*</span>
+                </label>
+                {{ form.type }}
+                {% if form.type.errors %}
+                <p class="mt-1 text-sm text-red-600">
+                    {% for error in form.type.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </p>
+                {% endif %}
+            </div>
+            
+            <!-- Категория -->
+            <div>
+                <label for="{{ form.category.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                    Категория <span class="text-red-500">*</span>
+                </label>
+                {{ form.category }}
+                {% if form.category.errors %}
+                <p class="mt-1 text-sm text-red-600">
+                    {% for error in form.category.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </p>
+                {% endif %}
+            </div>
+            
+            <!-- Подкатегория -->
+            <div>
+                <label for="{{ form.subcategory.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                    Подкатегория <span class="text-red-500">*</span>
+                </label>
+                {{ form.subcategory }}
+                {% if form.subcategory.errors %}
+                <p class="mt-1 text-sm text-red-600">
+                    {% for error in form.subcategory.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </p>
+                {% endif %}
+            </div>
+            
+            <!-- Сумма -->
+            <div>
+                <label for="{{ form.amount.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                    Сумма (руб.) <span class="text-red-500">*</span>
+                </label>
+                {{ form.amount }}
+                {% if form.amount.errors %}
+                <p class="mt-1 text-sm text-red-600">
+                    {% for error in form.amount.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </p>
+                {% endif %}
+            </div>
+            
+            <!-- Комментарий -->
+            <div class="md:col-span-2">
+                <label for="{{ form.comment.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                    Комментарий
+                </label>
+                {{ form.comment }}
+                {% if form.comment.errors %}
+                <p class="mt-1 text-sm text-red-600">
+                    {% for error in form.comment.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="flex justify-between pt-4">
+            <a href="{% url 'home' %}" class="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded transition">
+                Отмена
+            </a>
+            <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded transition">
+                {% if form.instance.pk %}Сохранить изменения{% else %}Создать запись{% endif %}
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    $(document).ready(function() {
+        // Функция для обновления списка категорий при выборе типа
+        function updateCategories() {
+            var typeId = $('#id_type').val();
+            if(typeId) {
+                $.ajax({
+                    url: "{% url 'ajax_get_categories' %}",
+                    data: {
+                        'type_id': typeId
+                    },
+                    success: function(data) {
+                        var categorySelect = $('#id_category');
+                        var currentCategoryId = categorySelect.val();
+                        
+                        categorySelect.empty();
+                        categorySelect.append($('<option>', {
+                            value: '',
+                            text: '---------'
+                        }));
+                        
+                        $.each(data, function(index, category) {
+                            categorySelect.append($('<option>', {
+                                value: category.id,
+                                text: category.name
+                            }));
+                        });
+                        
+                        // Если редактируем запись, пытаемся восстановить выбранную категорию
+                        if (currentCategoryId) {
+                            categorySelect.val(currentCategoryId);
+                        }
+                        
+                        // Обновляем список подкатегорий
+                        updateSubcategories();
+                    }
+                });
+            } else {
+                $('#id_category').empty();
+                $('#id_category').append($('<option>', {
+                    value: '',
+                    text: '---------'
+                }));
+                
+                $('#id_subcategory').empty();
+                $('#id_subcategory').append($('<option>', {
+                    value: '',
+                    text: '---------'
+                }));
+            }
+        }
+        
+        // Функция для обновления списка подкатегорий при выборе категории
+        function updateSubcategories() {
+            var categoryId = $('#id_category').val();
+            if(categoryId) {
+                $.ajax({
+                    url: "{% url 'ajax_get_subcategories' %}",
+                    data: {
+                        'category_id': categoryId
+                    },
+                    success: function(data) {
+                        var subcategorySelect = $('#id_subcategory');
+                        var currentSubcategoryId = subcategorySelect.val();
+                        
+                        subcategorySelect.empty();
+                        subcategorySelect.append($('<option>', {
+                            value: '',
+                            text: '---------'
+                        }));
+                        
+                        $.each(data, function(index, subcategory) {
+                            subcategorySelect.append($('<option>', {
+                                value: subcategory.id,
+                                text: subcategory.name
+                            }));
+                        });
+                        
+                        // Если редактируем запись, пытаемся восстановить выбранную подкатегорию
+                        if (currentSubcategoryId) {
+                            subcategorySelect.val(currentSubcategoryId);
+                        }
+                    }
+                });
+            } else {
+                $('#id_subcategory').empty();
+                $('#id_subcategory').append($('<option>', {
+                    value: '',
+                    text: '---------'
+                }));
+            }
+        }
+        
+        // Автоматическое заполнение даты при загрузке страницы
+        {% if not form.instance.pk %}
+            function setCurrentDate() {
+                var today = new Date();
+                var dd = String(today.getDate()).padStart(2, '0');
+                var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+                var yyyy = today.getFullYear();
+
+                today = yyyy + '-' + mm + '-' + dd;
+                $('#id_date_created').val(today);
+            }
+
+            // Вызываем функцию при загрузке
+            setCurrentDate();
+        {% endif %}
+        
+        // Инициализация при загрузке страницы
+        {% if form.instance.pk %}
+            function setCurrentDate() {
+                var today = new Date();
+                var dd = String(today.getDate()).padStart(2, '0');
+                var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+                var yyyy = today.getFullYear();
+
+                today = yyyy + '-' + mm + '-' + dd;
+                $('#id_date_created').val(today);
+            }
+
+            // Вызываем функцию при загрузке
+            setCurrentDate();
+        {% else %}
+            // Если создаем новую запись, инициализируем списки
+            updateCategories();
+        {% endif %}
+        
+        // Обработчики событий изменения значений
+        $('#id_type').change(updateCategories);
+        $('#id_category').change(updateSubcategories);
+    });
+</script>
+{% endblock %}
