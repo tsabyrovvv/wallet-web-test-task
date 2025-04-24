@@ -1,4 +1,6 @@
 from django.db import models
+from django.utils import timezone
+from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 
 
@@ -65,7 +67,12 @@ class CashFlow(models.Model):
     type = models.ForeignKey(Type, on_delete=models.PROTECT, verbose_name="Тип")
     category = models.ForeignKey(Category, on_delete=models.PROTECT, verbose_name="Категория")
     subcategory = models.ForeignKey(Subcategory, on_delete=models.PROTECT, verbose_name="Подкатегория")
-    amount = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0.01)], verbose_name="Сумма (руб.)")
+    amount = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        validators=[MinValueValidator(0.01)], 
+        verbose_name="Сумма (руб.)"
+    )
     comment = models.TextField(blank=True, null=True, verbose_name="Комментарий")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Время создания в системе")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Время последнего обновления")
@@ -78,3 +85,30 @@ class CashFlow(models.Model):
     def __str__(self):
         return f"{self.date_created} - {self.type} - {self.category} - {self.subcategory} - {self.amount} руб."
     
+    def clean(self):
+        """Проверка логических зависимостей между полями"""
+        super().clean()
+        
+        # Проверка зависимости между типом и категорией
+        if self.type and self.category and self.category.type != self.type:
+            raise ValidationError({
+                'category': f'Выбранная категория "{self.category}" не относится к выбранному типу "{self.type}"'
+            })
+        
+        # Проверка зависимости между категорией и подкатегорией
+        if self.category and self.subcategory and self.subcategory.category != self.category:
+            raise ValidationError({
+                'subcategory': f'Выбранная подкатегория "{self.subcategory}" не относится к выбранной категории "{self.category}"'
+            })
+        
+        # Проверка даты (не может быть в будущем)
+        if self.date_created and self.date_created > timezone.now().date():
+            raise ValidationError({
+                'date_created': 'Дата создания записи не может быть в будущем'
+            })
+    
+    def save(self, *args, **kwargs):
+        """Переопределение метода сохранения для запуска валидации"""
+        self.full_clean()  # Запускаем валидацию перед сохранением
+        super().save(*args, **kwargs)
+        
